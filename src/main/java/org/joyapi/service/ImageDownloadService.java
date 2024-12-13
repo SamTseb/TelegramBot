@@ -4,6 +4,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.HttpResponse;
+import org.joyapi.exception.ImageDownloadException;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -12,9 +13,17 @@ import java.io.InputStream;
 import java.io.IOException;
 
 @Service
-public class ImageDownloader {
+public class ImageDownloadService {
 
-    public File downloadImage(String url) throws IOException {
+    public File downloadImage(String messageText){
+        try {
+            return downloadImageExternal(messageText);
+        } catch (IOException e) {
+            throw new ImageDownloadException("Error occurred during image download! URL: " + messageText);
+        }
+    }
+
+    private File downloadImageExternal(String url) throws IOException {
         // Создаем HTTP клиент
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             // Создаем GET-запрос

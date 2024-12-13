@@ -1,9 +1,12 @@
 package org.joyapi.bot;
 
 import lombok.AllArgsConstructor;
-import org.joyapi.service.ImageDownloader;
-import org.springframework.stereotype.Service;
+import org.joyapi.exception.TelegramSendImageException;
+import org.joyapi.exception.TelegramSendMessageException;
+import org.joyapi.service.ImageDownloadService;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -16,7 +19,8 @@ import java.io.InputStream;
 @AllArgsConstructor
 public class MyTelegramBot extends TelegramLongPollingBot {
 
-    private final ImageDownloader imageDownloader;
+    private final ImageDownloadService imageDownloadService;
+    private String chatId;
 
     @Override
     public String getBotUsername() {
@@ -30,15 +34,44 @@ public class MyTelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        // Проверяем, есть ли сообщение и текст в обновлении
+
         if (update.hasMessage() && update.getMessage().hasText()) {
             String messageText = update.getMessage().getText();
-            String chatId = update.getMessage().getChatId().toString();
+            chatId = update.getMessage().getChatId().toString();
 
-            // Ответ на сообщение
-            SendMessage message = new SendMessage();
-            message.setChatId(chatId);
-            message.setText("Вы сказали: " + messageText);
+            File imageFile = imageDownloadService.downloadImage(messageText);
+
+            sendTextMessage("Here your image");
+            sendImage(imageFile);
+        }
+    }
+
+    private void sendTextMessage(String messageText) {
+        SendMessage message = new SendMessage();
+        message.setText(messageText);
+        message.setChatId(chatId);
+
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            throw new TelegramSendMessageException(String.format("""
+                                                                Error occurred during sending message to user!
+                                                                ChatID:%s
+                                                                Message:%s""", chatId, messageText));
+        }
+    }
+
+    private void sendImage(File imageFile){
+        SendPhoto sendPhoto = new SendPhoto();
+        sendPhoto.setChatId(chatId);
+        sendPhoto.setPhoto(new InputFile(imageFile));
+
+        try {
+            execute(sendPhoto);
+        } catch(TelegramApiException exception){
+            throw new TelegramSendImageException(String.format("""
+                                                                Error occurred during sending message to user!
+                                                                ChatID:%s""", chatId));
         }
     }
 }

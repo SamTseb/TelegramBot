@@ -10,12 +10,12 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @AllArgsConstructor
 @Service
 public class BotService {
-    private final ImageDownloader imageDownloader;
+    private final ImageDownloadService imageDownloadService;
 
     public void botRun() {
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-            botsApi.registerBot(new MyTelegramBot(imageDownloader));
+            botsApi.registerBot(new MyTelegramBot(imageDownloadService));
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
