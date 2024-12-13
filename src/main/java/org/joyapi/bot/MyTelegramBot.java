@@ -1,23 +1,23 @@
 package org.joyapi.bot;
 
-import lombok.AllArgsConstructor;
 import org.joyapi.exception.TelegramSendImageException;
 import org.joyapi.exception.TelegramSendMessageException;
 import org.joyapi.service.ImageDownloadService;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
-@AllArgsConstructor
 public class MyTelegramBot extends TelegramLongPollingBot {
+
+    public MyTelegramBot(ImageDownloadService imageDownloadService){
+        this.imageDownloadService = imageDownloadService;
+        this.chatId = null;
+    }
 
     private final ImageDownloadService imageDownloadService;
     private String chatId;
