@@ -1,0 +1,172 @@
+openapi: 3.0.0
+info:
+  title: Source API
+  description: API for accessing posts, deleted images, comments, and tags from Source.
+  version: 1.0.0
+servers:
+  - url: https://source.com
+paths:
+  /index.php:
+    get:
+      summary: Retrieve posts
+      description: Fetch posts based on various criteria. Returns a JSON response if specified.
+      parameters:
+        - name: page
+          in: query
+          required: true
+          schema:
+            type: string
+            example: dapi
+          description: The API endpoint type (fixed to `dapi`).
+        - name: s
+          in: query
+          required: true
+          schema:
+            type: string
+            example: post
+          description: The service type (fixed to `post`).
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            example: index
+          description: The query type (fixed to `index`).
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            example: 100
+          description: How many posts to retrieve.
+        - name: pid
+          in: query
+          schema:
+            type: integer
+            example: 1
+          description: The page number.
+        - name: tags
+          in: query
+          schema:
+            type: string
+            example: "example_tag"
+          description: The tags to search for. Supports meta-tags as on the website.
+        - name: cid
+          in: query
+          schema:
+            type: integer
+            example: 1617550600
+          description: Change ID of the post in Unix time.
+        - name: id
+          in: query
+          schema:
+            type: integer
+            example: 12345
+          description: The specific post ID.
+        - name: json
+          in: query
+          schema:
+            type: integer
+            enum: [ 0, 1 ]
+            example: 1
+          description: Set to 1 for a JSON-formatted response.
+        - name: deleted
+          in: query
+          required: true
+          schema:
+            type: string
+            example: show
+          description: Parameter to show deleted posts (fixed to `show`).
+        - name: last_id
+          in: query
+          schema:
+            type: integer
+            example: 5000
+          description: Numerical value to retrieve entries above this ID.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostDTO'
+        '500':
+          description: Server error, possibly due to overload.
+components:
+  schemas:
+    PostDTO:
+      type: object
+      properties:
+        preview_url:
+          type: string
+          description: URL of the preview image.
+        sample_url:
+          type: string
+          description: URL of the sample image.
+        file_url:
+          type: string
+          description: URL of the file.
+        directory:
+          type: integer
+          description: Directory where the image is stored.
+        hash:
+          type: string
+          description: Unique hash of the file.
+        width:
+          type: integer
+          description: Width of the image in pixels.
+        height:
+          type: integer
+          description: Height of the image in pixels.
+        id:
+          type: integer
+          description: Unique ID of the image.
+        image:
+          type: string
+          description: File name of the image.
+        change:
+          type: integer
+          format: int64
+          description: Change ID in Unix time.
+        owner:
+          type: string
+          description: Owner of the image.
+        parent_id:
+          type: integer
+          description: ID of the parent image, if any.
+        rating:
+          type: string
+          description: Rating of the image (e.g., explicit).
+        sample:
+          type: boolean
+          description: Whether this is a sample image.
+        sample_height:
+          type: integer
+          description: Height of the sample image in pixels.
+        sample_width:
+          type: integer
+          description: Width of the sample image in pixels.
+        score:
+          type: integer
+          description: Score of the image.
+        tags:
+          type: string
+          description: Tags associated with the image.
+        source:
+          type: string
+          description: Source URL of the image.
+        status:
+          type: string
+          description: Status of the image (e.g., active).
+        has_notes:
+          type: boolean
+          description: Whether the image has notes.
+        comment_count:
+          type: integer
+          description: Number of comments on the image.
+      required:
+        - file_url
+        - id
