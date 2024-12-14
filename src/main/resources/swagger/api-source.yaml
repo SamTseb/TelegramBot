@@ -55,13 +55,13 @@ paths:
         - name: cid
           in: query
           schema:
-            type: integer
+            type: string
             example: 1617550600
           description: Change ID of the post in Unix time.
         - name: id
           in: query
           schema:
-            type: integer
+            type: string
             example: 12345
           description: The specific post ID.
         - name: json

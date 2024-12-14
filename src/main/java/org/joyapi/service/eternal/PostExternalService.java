@@ -15,7 +15,7 @@ public class PostExternalService {
     private final DefaultApi defaultApi;
     private final PostMapper postMapper;
 
-    public Post getPost(Integer postId) {
+    public Post getPost(String postId) {
         PostDTO postDTO = defaultApi.indexPhpGet("dapi", "post", "index",
                                                 null, null, null, null,
                                                         postId, "1", null, null)

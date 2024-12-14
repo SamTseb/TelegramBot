@@ -42,3 +42,18 @@ databaseChangeLog:
             columns:
               - column:
                   name: post_id
+  - changeSet:
+      id: 3
+      author: botmaster
+      changes:
+        - createTable:
+            tableName: authors
+            columns:
+              - column:
+                  name: name
+                  type: string
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: post_amount
+                  type: bigint
