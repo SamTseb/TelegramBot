@@ -11,9 +11,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class ImageDownloadService {
+
+    public List<File> downloadImageList(List<String> imageUrlList){
+        return imageUrlList.stream().map(this::downloadImage).toList();
+    }
 
     public File downloadImage(String url){
         try {

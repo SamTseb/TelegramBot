@@ -13,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
+import java.util.List;
 
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
@@ -75,6 +76,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                                                                 Error occurred during sending message to user!
                                                                 ChatID:%s""", CHAT_ID));
         }
+    }
+
+    public void sendImageList(List<File> imageList){
+        imageList.forEach(this::sendImage);
     }
 }
 

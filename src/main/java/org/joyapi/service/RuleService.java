@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.io.File;
+import java.util.List;
 
 @AllArgsConstructor
 @Service
@@ -17,10 +18,23 @@ public class RuleService {
     private final TelegramBot telegramBot;
     private final ImageDownloadService imageDownloadService;
 
-    @Scheduled(fixedDelay = 2000)
+    @Scheduled(fixedDelay = 10000)
     public void getPosts(){
-        Post post = postExternalService.getPostList(1,0, AuthorTag.kawa.getValue()).get(0);
-        File image = imageDownloadService.downloadImage(post.getFileUrl());
-        telegramBot.sendImage(image);
+        List<Post> posts = getAndSavePosts(5,0, AuthorTag.kawa.getValue());
+        List<String> imageUrls = posts.stream().map(Post::getFileUrl).toList();
+        List<File> images = imageDownloadService.downloadImageList(imageUrls);
+        telegramBot.sendImageList(images);
+    }
+
+    private List<Post> getAndSavePosts(Integer limit, Integer pageNumber, String tags){
+        List<Post> posts = postExternalService.getPostList(limit, pageNumber, tags);
+        List<Post> savedPosts = savePosts(posts);
+
+        return savedPosts;
+    }
+
+    private List<Post> savePosts(List<Post> posts){
+
+        return null;
     }
 }

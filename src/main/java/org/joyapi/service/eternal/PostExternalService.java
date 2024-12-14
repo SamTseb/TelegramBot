@@ -15,7 +15,7 @@ public class PostExternalService {
     private final DefaultApi defaultApi;
     private final PostMapper postMapper;
 
-    public Post getFirstPost(Integer postId) {
+    public Post getPost(Integer postId) {
         PostDTO postDTO = defaultApi.indexPhpGet("dapi", "post", "index",
                                                 null, null, null, null,
                                                         postId, "1", null, null)
@@ -33,7 +33,7 @@ public class PostExternalService {
         return postMapper.toPostList(postDTOs);
     }
 
-    public List<Post> getPostListDefault(String tags){
-        return getPostList(100, 1, tags);
+    public List<Post> getPostList(String tags){
+        return getPostList(100, 0, tags);
     }
 }
