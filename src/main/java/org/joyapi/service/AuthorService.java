@@ -1,5 +1,6 @@
 package org.joyapi.service;
 
+import lombok.AllArgsConstructor;
 import org.joyapi.exception.AuthorNotFoundException;
 import org.joyapi.model.Author;
 import org.joyapi.model.Post;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Stream;
 
+@AllArgsConstructor
 @Service
 public class AuthorService {
     private AuthorRepository authorRepository;
