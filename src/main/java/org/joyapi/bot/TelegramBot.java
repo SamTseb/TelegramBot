@@ -4,11 +4,13 @@ import org.joyapi.exception.TelegramSendImageException;
 import org.joyapi.exception.TelegramSendMessageException;
 import org.joyapi.service.AuthorService;
 import org.joyapi.service.ImageDownloadService;
+import org.joyapi.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -23,11 +25,13 @@ import java.util.List;
 public class TelegramBot extends TelegramLongPollingBot {
 
     private final AuthorService authorService;
+    private final PostService postService;
     private static final String CHAT_ID = "843593235";
 
     @Autowired
-    public TelegramBot(AuthorService authorService) {
+    public TelegramBot(AuthorService authorService, PostService postService) {
         this.authorService = authorService;
+        this.postService = postService;
     }
 
     @Override
@@ -58,7 +62,9 @@ public class TelegramBot extends TelegramLongPollingBot {
             sendTextMessage("Author was saved: " + authorName);
         }
         if (update.hasCallbackQuery()){
+            CallbackQuery callbackQuery = update.getCallbackQuery();
             /// TODO Find a way to add to favorite
+            postService.addPostToFavorites(callbackQuery.getData());
             sendTextMessage("It was added to favorites");
         }
     }
@@ -89,21 +95,18 @@ public class TelegramBot extends TelegramLongPollingBot {
                     Error occurred during sending message to user!
                     ChatID:%s""", CHAT_ID));
         }
-
-        sendReactionMessage();
     }
 
     public void sendImageList(List<File> imageList) {
         imageList.forEach(this::sendImage);
     }
 
-    private void sendReactionMessage() {
+    public void sendReactionMessage(String postId) {
         SendMessage message = SendMessage.builder()
-                .chatId(CHAT_ID)
-//                .text("Пожалуйста, выберите свою реакцию:")
-                .replyMarkup(createReactionButtons())
-                .build();
-
+                                        .chatId(CHAT_ID)
+                        //                .text("Пожалуйста, выберите свою реакцию:")
+                                        .replyMarkup(createReactionButtons(postId))
+                                        .build();
         try {
             execute(message);
         } catch (TelegramApiException e) {
@@ -111,10 +114,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private InlineKeyboardMarkup createReactionButtons() {
+    private InlineKeyboardMarkup createReactionButtons(String postId) {
         InlineKeyboardButton addToFavorite = InlineKeyboardButton.builder()
                 .text("👍")
-                .callbackData("like")
+                .callbackData(postId)
                 .build();
 
         return InlineKeyboardMarkup.builder()

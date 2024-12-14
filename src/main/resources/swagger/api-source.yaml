@@ -8,6 +8,7 @@ servers:
 paths:
   /index.php:
     get:
+      operationId: getPosts
       summary: Retrieve posts
       description: Fetch posts based on various criteria. Returns a JSON response if specified.
       parameters:
@@ -95,6 +96,7 @@ paths:
           description: Server error, possibly due to overload.
   /public/addfav.php:
     get:
+      operationId: addPostToFavorites
       summary: Add a post to favorites.
       description: Add a post to favorites.
       parameters:
