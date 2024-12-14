@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: 1
-      author: yourname
+      author: botmaster
       changes:
         - createTable:
             tableName: posts
@@ -27,3 +27,14 @@ databaseChangeLog:
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
+  - changeSet:
+      id: 2
+      author: botmaster
+      changes:
+        - createIndex:
+            indexName: idx_posts_id_unique
+            tableName: posts
+            columns:
+              - column:
+                  name: id
+                  unique: true

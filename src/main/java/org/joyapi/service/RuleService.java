@@ -36,7 +36,7 @@ public class RuleService {
 
     private List<Post> savePosts(List<Post> posts){
         List<Post> savedPosts = posts.stream()
-                .filter(post -> !postService.doesPostExist(post.getGuid()))
+                .filter(post -> !postService.doesPostExist(post.getId()))
                 .toList();
         savedPosts.forEach(postService::savePost);
 

@@ -20,7 +20,7 @@ public class Post {
     @Column(name = "fileUrl", nullable = false)
     private String fileUrl;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private int id;
 
     @Column
