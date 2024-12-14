@@ -28,4 +28,8 @@ public class PostService {
     public void deletePost(UUID guid) {
         postRepository.deleteById(guid);
     }
+
+    public boolean doesPostExist(UUID guid) {
+        return postRepository.existsById(guid);
+    }
 }

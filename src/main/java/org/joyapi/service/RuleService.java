@@ -17,6 +17,7 @@ public class RuleService {
     private final PostExternalService postExternalService;
     private final TelegramBot telegramBot;
     private final ImageDownloadService imageDownloadService;
+    private final PostService postService;
 
     @Scheduled(fixedDelay = 10000)
     public void getPosts(){
@@ -34,7 +35,11 @@ public class RuleService {
     }
 
     private List<Post> savePosts(List<Post> posts){
+        List<Post> savedPosts = posts.stream()
+                .filter(post -> !postService.doesPostExist(post.getGuid()))
+                .toList();
+        savedPosts.forEach(postService::savePost);
 
-        return null;
+        return savedPosts;
     }
 }
