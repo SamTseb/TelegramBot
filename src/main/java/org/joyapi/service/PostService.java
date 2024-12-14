@@ -29,7 +29,7 @@ public class PostService {
         postRepository.deleteById(guid);
     }
 
-    public boolean doesPostExist(int id) {
+    public boolean doesPostExist(String id) {
         return postRepository.existsById(id);
     }
 }

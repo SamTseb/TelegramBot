@@ -7,11 +7,16 @@ databaseChangeLog:
             tableName: posts
             columns:
               - column:
-                  name: id
+                  name: guid
                   type: SERIAL
                   autoIncrement: true
                   constraints:
                     primaryKey: true
+              - column:
+                  name: post_id
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
               - column:
                   name: file_url
                   type: VARCHAR(255)
