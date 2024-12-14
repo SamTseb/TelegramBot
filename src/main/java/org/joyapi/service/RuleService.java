@@ -21,7 +21,7 @@ public class RuleService {
     private final PostService postService;
     private final AuthorService authorService;
 
-//    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 10000)
     public void getPosts(){
         List<Author> allAuthors = authorService.getAllAuthors();
         for(Author author : allAuthors) {

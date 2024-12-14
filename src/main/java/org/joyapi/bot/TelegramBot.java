@@ -59,6 +59,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
         if (update.hasCallbackQuery()){
             /// TODO Find a way to add to favorite
+            sendTextMessage("It was added to favorites");
         }
     }
 
@@ -81,8 +82,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         SendPhoto sendPhoto = new SendPhoto();
         sendPhoto.setChatId(CHAT_ID);
         sendPhoto.setPhoto(new InputFile(imageFile));
-        sendReactionMessage();
-
         try {
             execute(sendPhoto);
         } catch (TelegramApiException exception) {
@@ -90,6 +89,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                     Error occurred during sending message to user!
                     ChatID:%s""", CHAT_ID));
         }
+
+        sendReactionMessage();
     }
 
     public void sendImageList(List<File> imageList) {
@@ -99,7 +100,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void sendReactionMessage() {
         SendMessage message = SendMessage.builder()
                 .chatId(CHAT_ID)
-                .text("Пожалуйста, выберите свою реакцию:")
+//                .text("Пожалуйста, выберите свою реакцию:")
                 .replyMarkup(createReactionButtons())
                 .build();
 

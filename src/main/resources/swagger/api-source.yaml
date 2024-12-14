@@ -93,6 +93,23 @@ paths:
                   $ref: '#/components/schemas/PostDTO'
         '500':
           description: Server error, possibly due to overload.
+  /public/addfav.php:
+    get:
+      summary: Add a post to favorites.
+      description: Add a post to favorites.
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+            example: 11111111
+          description: ID of post
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Server error, possibly due to overload.
 components:
   schemas:
     PostDTO:
