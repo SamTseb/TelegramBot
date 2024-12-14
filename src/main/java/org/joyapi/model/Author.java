@@ -18,4 +18,8 @@ public class Author {
 
     @Column(name = "post_amount")
     private Long postAmount;
+
+    public void oneMorePost(){
+        postAmount++;
+    }
 }

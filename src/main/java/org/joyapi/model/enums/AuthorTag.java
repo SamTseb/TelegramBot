@@ -12,4 +12,13 @@ public enum AuthorTag {
     AuthorTag(String value) {
         this.value = value;
     }
+
+    public static boolean contains(String value) {
+        for (AuthorTag tag : AuthorTag.values()) {
+            if (tag.value.equals(value)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -1,6 +1,7 @@
 package org.joyapi.exceptionhandler;
 
 import lombok.extern.slf4j.Slf4j;
+import org.joyapi.exception.AuthorNotFoundException;
 import org.joyapi.exception.ImageDownloadException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class CommonHandler {
 
-    @ExceptionHandler(ImageDownloadException.class)
+    @ExceptionHandler({ImageDownloadException.class, AuthorNotFoundException.class})
     public void handleAllExeptions(Exception exception){
         log.warn(exception.getMessage());
     }
