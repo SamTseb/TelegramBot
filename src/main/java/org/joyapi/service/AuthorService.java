@@ -3,7 +3,6 @@ package org.joyapi.service;
 import org.joyapi.exception.AuthorNotFoundException;
 import org.joyapi.model.Author;
 import org.joyapi.model.Post;
-import org.joyapi.model.enums.AuthorTag;
 import org.joyapi.repos.AuthorRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +13,13 @@ import java.util.stream.Stream;
 public class AuthorService {
     private AuthorRepository authorRepository;
 
-    public void newAuthor(){}
+    public void newAuthor(String authorName){
+        Author author = new Author();
+        author.setName(authorName);
+        author.setPostAmount(0l);
+
+        authorRepository.save(author);
+    }
 
     public void oneMorePost(Post post){
         List<String> authorNames = recognizeAuthors(post.getTags());
@@ -25,6 +30,10 @@ public class AuthorService {
             author.oneMorePost();
             authorRepository.save(author);
         }
+    }
+
+    public List<Author> getAllAuthors(){
+        return authorRepository.findAll();
     }
 
     private List<String> recognizeAuthors(String inputTags){

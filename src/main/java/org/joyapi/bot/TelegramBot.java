@@ -2,6 +2,7 @@ package org.joyapi.bot;
 
 import org.joyapi.exception.TelegramSendImageException;
 import org.joyapi.exception.TelegramSendMessageException;
+import org.joyapi.service.AuthorService;
 import org.joyapi.service.ImageDownloadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,13 +19,13 @@ import java.util.List;
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
 
-    @Autowired
-    public TelegramBot(ImageDownloadService imageDownloadService){
-        this.imageDownloadService = imageDownloadService;
-    }
-
-    private final ImageDownloadService imageDownloadService;
+    private final AuthorService authorService;
     private static final String CHAT_ID = "843593235";
+
+    @Autowired
+    public TelegramBot(AuthorService authorService){
+        this.authorService = authorService;
+    }
 
     @Override
     public String getBotUsername() {
@@ -40,12 +41,12 @@ public class TelegramBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
 
         if (update.hasMessage() && update.getMessage().hasText()) {
-            String messageText = update.getMessage().getText();
+            if (update.getMessage().getText().contains("/new-author")) {
+                String authorName = update.getMessage().getText().split(" ")[1];
+                authorService.newAuthor(authorName);
 
-            File imageFile = imageDownloadService.downloadImage(messageText);
-
-            sendTextMessage("Here your image");
-            sendImage(imageFile);
+                sendTextMessage("Author was saved: " + authorName);
+            }
         }
     }
 

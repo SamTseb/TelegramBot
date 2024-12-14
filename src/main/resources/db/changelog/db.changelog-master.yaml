@@ -51,7 +51,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: name
-                  type: string
+                  type: VARCHAR(100)
                   constraints:
                     primaryKey: true
               - column:

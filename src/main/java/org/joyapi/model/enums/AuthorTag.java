@@ -4,7 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum AuthorTag {
-    kawa("kawa-v");
+    kawa_v("kawa-v"),
+    afrobull("afrobull"),
+    nayaase_beleguii("nayaase_beleguii"),
+    ;
 
     private final String value;
 
