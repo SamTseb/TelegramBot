@@ -29,7 +29,7 @@ public class AuthorService {
 
     private List<String> recognizeAuthors(String inputTags){
         return Stream.of(inputTags.split(" "))
-                    .filter(AuthorTag::contains)
+                    .filter(authorRepository::existsByName)
                     .toList();
     }
 }
