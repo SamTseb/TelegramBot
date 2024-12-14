@@ -63,7 +63,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
         if (update.hasCallbackQuery()){
             CallbackQuery callbackQuery = update.getCallbackQuery();
-            /// TODO Find a way to add to favorite
             postService.addPostToFavorites(callbackQuery.getData());
             sendTextMessage("It was added to favorites");
         }

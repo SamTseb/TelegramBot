@@ -5,6 +5,7 @@ import com.source.client.model.PostDTO;
 import lombok.AllArgsConstructor;
 import org.joyapi.mapper.PostMapper;
 import org.joyapi.model.Post;
+import org.joyapi.service.AuthorService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 public class PostExternalService {
     private final DefaultApi defaultApi;
     private final PostMapper postMapper;
+    private final AuthorService authorService;
 
     public Post getPost(String postId) {
         PostDTO postDTO = defaultApi.getPosts("dapi", "post", "index",
@@ -28,7 +30,12 @@ public class PostExternalService {
 
     public List<Post> getPostList(Integer limit, Integer pageNumber, String tags) {
         List<PostDTO> postDTOs = defaultApi.getPosts("dapi", "post", "index", limit, pageNumber, tags,
-                                null, null, "1", null, null);
+                                null, null, "1", null, null).stream()
+                .map(postDTO -> {
+                    postDTO.setTags(String.join(" ", authorService.recognizeAuthors(postDTO.getTags())));
+                    return postDTO;
+                })
+                .toList();
 
         return postMapper.toPostList(postDTOs);
     }

@@ -38,7 +38,7 @@ public class AuthorService {
         return authorRepository.findAll();
     }
 
-    private List<String> recognizeAuthors(String inputTags){
+    public List<String> recognizeAuthors(String inputTags){
         return Stream.of(inputTags.split(" "))
                     .filter(authorRepository::existsByName)
                     .toList();
