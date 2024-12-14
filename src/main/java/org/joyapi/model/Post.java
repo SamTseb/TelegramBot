@@ -9,18 +9,18 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table
+@Table(name = "posts")
 public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "guid", nullable = false)
+    @Column(name = "guid")
     private UUID guid;
 
-    @Column(name = "fileUrl", nullable = false)
+    @Column(name = "file_url", nullable = false)
     private String fileUrl;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "post_id", nullable = false, unique = true)
     private String postId;
 
     @Column

@@ -8,8 +8,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: guid
-                  type: SERIAL
-                  autoIncrement: true
+                  type: uuid
                   constraints:
                     primaryKey: true
               - column:
@@ -29,7 +28,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: tags
-                  type: VARCHAR(255)
+                  type: VARCHAR(1000)
                   constraints:
                     nullable: false
   - changeSet:
@@ -37,9 +36,9 @@ databaseChangeLog:
       author: botmaster
       changes:
         - createIndex:
-            indexName: idx_posts_id_unique
+            indexName: idx_posts_post_id_unique
             tableName: posts
             unique: true
             columns:
               - column:
-                  name: id
+                  name: post_id

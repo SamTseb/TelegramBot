@@ -11,6 +11,7 @@ import java.util.List;
 public interface PostMapper {
 
     @Mapping(target = "guid", ignore = true)
+    @Mapping(target = "postId", source = "id")
     Post toPost(PostDTO postDTO);
 
     List<Post> toPostList(List<PostDTO> postDTOs);

@@ -30,6 +30,6 @@ public class PostService {
     }
 
     public boolean doesPostExist(String id) {
-        return postRepository.existsById(id);
+        return postRepository.existsByPostId(id);
     }
 }
