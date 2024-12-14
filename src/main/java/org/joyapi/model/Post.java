@@ -1,9 +1,8 @@
 package org.joyapi.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.persistence.*;
 
 import java.util.UUID;
 
@@ -24,7 +23,7 @@ public class Post {
     @Column(nullable = false)
     private int id;
 
-    @Column(nullable = true)
+    @Column
     private int score;
 
     @Column(nullable = false)
