@@ -24,20 +24,15 @@ public class ImageDownloadService {
     }
 
     private File downloadImageExternal(String url) throws IOException {
-        // Создаем HTTP клиент
         try (CloseableHttpClient client = HttpClients.createDefault()) {
-            // Создаем GET-запрос
             HttpGet request = new HttpGet(url);
 
-            // Выполнение запроса
             HttpResponse response = client.execute(request);
 
-            // Проверяем успешность запроса (статус 200)
             if (response.getStatusLine().getStatusCode() == 200) {
                 InputStream inputStream = response.getEntity().getContent();
                 File tempFile = File.createTempFile("downloaded", ".jpg");
 
-                // Записываем данные в файл
                 try (FileOutputStream outputStream = new FileOutputStream(tempFile)) {
                     byte[] buffer = new byte[8192];
                     int bytesRead;

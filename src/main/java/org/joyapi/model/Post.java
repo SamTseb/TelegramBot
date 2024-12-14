@@ -7,11 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Post {
-    @JsonProperty("preview_url")
-    private String previewUrl;
-
-    @JsonProperty("sample_url")
-    private String sampleUrl;
 
     @JsonProperty("file_url")
     private String fileUrl;

@@ -20,11 +20,10 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Autowired
     public TelegramBot(ImageDownloadService imageDownloadService){
         this.imageDownloadService = imageDownloadService;
-        this.chatId = null;
     }
 
     private final ImageDownloadService imageDownloadService;
-    private String chatId;
+    private static final String CHAT_ID = "843593235";
 
     @Override
     public String getBotUsername() {
@@ -41,7 +40,6 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         if (update.hasMessage() && update.getMessage().hasText()) {
             String messageText = update.getMessage().getText();
-            chatId = update.getMessage().getChatId().toString();
 
             File imageFile = imageDownloadService.downloadImage(messageText);
 
@@ -53,7 +51,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     public void sendTextMessage(String messageText) {
         SendMessage message = new SendMessage();
         message.setText(messageText);
-        message.setChatId(chatId);
+        message.setChatId(CHAT_ID);
 
         try {
             execute(message);
@@ -61,13 +59,13 @@ public class TelegramBot extends TelegramLongPollingBot {
             throw new TelegramSendMessageException(String.format("""
                                                                 Error occurred during sending message to user!
                                                                 ChatID:%s
-                                                                Message:%s""", chatId, messageText));
+                                                                Message:%s""", CHAT_ID, messageText));
         }
     }
 
     public void sendImage(File imageFile){
         SendPhoto sendPhoto = new SendPhoto();
-        sendPhoto.setChatId(chatId);
+        sendPhoto.setChatId(CHAT_ID);
         sendPhoto.setPhoto(new InputFile(imageFile));
 
         try {
@@ -75,7 +73,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         } catch(TelegramApiException exception){
             throw new TelegramSendImageException(String.format("""
                                                                 Error occurred during sending message to user!
-                                                                ChatID:%s""", chatId));
+                                                                ChatID:%s""", CHAT_ID));
         }
     }
 }

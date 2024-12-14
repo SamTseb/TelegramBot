@@ -15,11 +15,8 @@ public class ApiConfig {
         DefaultApi api = new DefaultApi();
         ApiClient apiClient = api.getApiClient();
         apiClient.addDefaultHeader("User-Agent", "PostmanRuntime/7.43.0");
-        apiClient.addDefaultHeader("Postman-Token", "2ea04b43-bdc5-4635-abd6-53ce33845f4c");
-//        apiClient.addDefaultHeader("Accept-Language", "ru");
-        apiClient.addDefaultHeader("Accept-Encoding", "gzip, deflate, br");
+        apiClient.addDefaultHeader("Accept-Encoding", "identity");
         apiClient.addDefaultHeader("Cache-Control", "no-cache");
-        apiClient.addDefaultHeader("Host", "api.source.com");
         apiClient.addDefaultHeader("Connection", "keep-alive");
         apiClient.setDebugging(true);
 
