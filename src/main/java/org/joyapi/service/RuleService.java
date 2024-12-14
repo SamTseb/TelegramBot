@@ -1,16 +1,26 @@
 package org.joyapi.service;
 
 import lombok.AllArgsConstructor;
+import org.joyapi.bot.TelegramBot;
 import org.joyapi.model.Post;
-import org.joyapi.service.eternal.RuleExternalService;
-import org.jvnet.hk2.annotations.Service;
+import org.joyapi.model.enums.AuthorTag;
+import org.joyapi.service.eternal.PostExternalService;
+import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Scheduled;
+
+import java.io.File;
 
 @AllArgsConstructor
 @Service
 public class RuleService {
-    private final RuleExternalService sourceExternalService;
+    private final PostExternalService postExternalService;
+    private final TelegramBot telegramBot;
+    private final ImageDownloadService imageDownloadService;
 
-    public Post getPost(){
-        return null;
+    @Scheduled(fixedDelay = 2000)
+    public void getPosts(){
+        Post post = postExternalService.getPostList(1,0, AuthorTag.kawa.getValue()).get(0);
+        File image = imageDownloadService.downloadImage(post.getFileUrl());
+        telegramBot.sendImage(image);
     }
 }

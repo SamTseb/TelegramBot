@@ -3,6 +3,8 @@ package org.joyapi.bot;
 import org.joyapi.exception.TelegramSendImageException;
 import org.joyapi.exception.TelegramSendMessageException;
 import org.joyapi.service.ImageDownloadService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -12,9 +14,11 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
 
-public class MyTelegramBot extends TelegramLongPollingBot {
+@Component
+public class TelegramBot extends TelegramLongPollingBot {
 
-    public MyTelegramBot(ImageDownloadService imageDownloadService){
+    @Autowired
+    public TelegramBot(ImageDownloadService imageDownloadService){
         this.imageDownloadService = imageDownloadService;
         this.chatId = null;
     }
@@ -46,7 +50,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private void sendTextMessage(String messageText) {
+    public void sendTextMessage(String messageText) {
         SendMessage message = new SendMessage();
         message.setText(messageText);
         message.setChatId(chatId);
@@ -61,7 +65,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private void sendImage(File imageFile){
+    public void sendImage(File imageFile){
         SendPhoto sendPhoto = new SendPhoto();
         sendPhoto.setChatId(chatId);
         sendPhoto.setPhoto(new InputFile(imageFile));

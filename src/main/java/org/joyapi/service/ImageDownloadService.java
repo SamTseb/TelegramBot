@@ -15,11 +15,11 @@ import java.io.IOException;
 @Service
 public class ImageDownloadService {
 
-    public File downloadImage(String messageText){
+    public File downloadImage(String url){
         try {
-            return downloadImageExternal(messageText);
+            return downloadImageExternal(url);
         } catch (IOException e) {
-            throw new ImageDownloadException("Error occurred during image download! URL: " + messageText);
+            throw new ImageDownloadException("Error occurred during image download! URL: " + url);
         }
     }
 

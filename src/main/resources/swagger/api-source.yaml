@@ -4,7 +4,7 @@ info:
   description: API for accessing posts, deleted images, comments, and tags from Source.
   version: 1.0.0
 servers:
-  - url: https://source.com
+  - url: https://api.source.com
 paths:
   /index.php:
     get:
@@ -67,13 +67,11 @@ paths:
         - name: json
           in: query
           schema:
-            type: integer
-            enum: [ 0, 1 ]
+            type: string
             example: 1
           description: Set to 1 for a JSON-formatted response.
         - name: deleted
           in: query
-          required: true
           schema:
             type: string
             example: show
