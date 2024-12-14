@@ -21,7 +21,7 @@ public class Post {
     private String fileUrl;
 
     @Column(nullable = false, unique = true)
-    private int id;
+    private int postId;
 
     @Column
     private int score;
