@@ -5,6 +5,7 @@ import org.joyapi.exception.TelegramSendMessageException;
 import org.joyapi.service.AuthorService;
 import org.joyapi.service.ImageDownloadService;
 import org.joyapi.service.PostService;
+import org.joyapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -26,12 +27,15 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private final AuthorService authorService;
     private final PostService postService;
+    private final UserService userService;
+
     private static final String CHAT_ID = "843593235";
 
     @Autowired
-    public TelegramBot(AuthorService authorService, PostService postService) {
+    public TelegramBot(AuthorService authorService, PostService postService, UserService userService) {
         this.authorService = authorService;
         this.postService = postService;
+        this.userService = userService;
     }
 
     @Override
@@ -47,19 +51,15 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
 
-        /*if (update.hasMessage() && update.getMessage().hasText()) {
+        if (update.hasMessage() && update.getMessage().hasText()) {
             if (update.getMessage().getText().contains("/new_author")) {
-                String authorName = update.getMessage().getText().split(" ")[1];
+                String authorName = update.getMessage().getText();
                 authorService.newAuthor(authorName);
 
                 sendTextMessage("Author was saved: " + authorName);
+            } else if (update.getMessage().getText().contains("/start")) {
+                userService.addNewUser(update.getMessage());
             }
-        }*/
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            String authorName = update.getMessage().getText();
-            authorService.newAuthor(authorName);
-
-            sendTextMessage("Author was saved: " + authorName);
         }
         if (update.hasCallbackQuery()){
             CallbackQuery callbackQuery = update.getCallbackQuery();

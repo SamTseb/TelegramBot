@@ -1,6 +1,7 @@
 package org.joyapi.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.joyapi.exception.AuthorNotFoundException;
 import org.joyapi.model.Author;
 import org.joyapi.model.Post;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @AllArgsConstructor
 @Service
 public class PostService {
@@ -53,8 +55,19 @@ public class PostService {
         List<Post> savedPosts = posts.stream()
                 .filter(post -> !doesPostExist(post.getPostId()))
                 .toList();
+        logNewPosts(savedPosts);
         savedPosts.forEach(this::savePost);
 
         return savedPosts;
+    }
+
+    private void logNewPosts(List<Post> posts) {
+        if (!posts.isEmpty()){
+            List<String> newPostIds = posts.stream()
+                                            .map(Post::getPostId)
+                                            .toList();
+            String newPostMessage = "New posts:\n" + String.join("\n", newPostIds);
+            log.info(newPostMessage);
+        }
     }
 }
