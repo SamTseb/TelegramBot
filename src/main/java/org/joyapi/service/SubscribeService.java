@@ -19,17 +19,17 @@ public class SubscribeService {
     private final PostService postService;
     private final AuthorService authorService;
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 5000)
     public void subscribe(){
         List<Author> allAuthors = authorService.getAllAuthors();
         for(Author author : allAuthors) {
             List<Post> posts = postService.getAndSavePosts(100, 0, author.getName());
-            for (Post post : posts) {
-                String imageUrl = post.getFileUrl();
-                File image = imageDownloadService.downloadImage(imageUrl);
-                telegramBot.sendImage(image);
-                telegramBot.sendReactionMessage(post.getPostId());
-            }
+//            for (Post post : posts) {
+//                String imageUrl = post.getFileUrl();
+//                File image = imageDownloadService.downloadImage(imageUrl);
+//                telegramBot.sendImage(image);
+//                telegramBot.sendReactionMessage(post.getPostId());
+//            }
         }
     }
 

@@ -3,6 +3,7 @@ package org.joyapi.service.eternal;
 import com.source.client.api.DefaultApi;
 import com.source.client.model.PostDTO;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.joyapi.mapper.PostMapper;
 import org.joyapi.model.Post;
 import org.joyapi.service.AuthorService;
@@ -32,7 +33,9 @@ public class PostExternalService {
         List<PostDTO> postDTOs = defaultApi.getPosts("dapi", "post", "index", limit, pageNumber, tags,
                                 null, null, "1", null, null).stream()
                 .map(postDTO -> {
-                    postDTO.setTags(String.join(" ", authorService.recognizeAuthors(postDTO.getTags())));
+                    if (!StringUtils.isEmpty(postDTO.getTags())) {
+                        postDTO.setTags(String.join(" ", authorService.recognizeAuthors(postDTO.getTags())));
+                    }
                     return postDTO;
                 })
                 .toList();

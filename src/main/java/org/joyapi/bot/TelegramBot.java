@@ -103,7 +103,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     public void sendReactionMessage(String postId) {
         SendMessage message = SendMessage.builder()
                                         .chatId(CHAT_ID)
-                        //                .text("Пожалуйста, выберите свою реакцию:")
+                                        .text("To favorites?")
                                         .replyMarkup(createReactionButtons(postId))
                                         .build();
         try {
