@@ -5,7 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -14,7 +15,6 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column
     private Long id;
 
@@ -23,4 +23,18 @@ public class User {
 
     @Column(name = "join_at", nullable = false)
     private LocalDateTime joinAt;
+
+    @Column(name = "chat_id", nullable = false)
+    private Long chatID;
+
+    @Column(nullable = false)
+    private String cookies;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_author_relationship",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_name")
+    )
+    private Set<Author> favoriteAuthors = new HashSet<>();
 }

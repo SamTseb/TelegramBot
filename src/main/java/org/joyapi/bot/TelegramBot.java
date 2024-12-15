@@ -1,12 +1,14 @@
 package org.joyapi.bot;
 
+import lombok.AllArgsConstructor;
 import org.joyapi.exception.TelegramSendImageException;
 import org.joyapi.exception.TelegramSendMessageException;
+import org.joyapi.model.enums.BotOption;
 import org.joyapi.service.AuthorService;
-import org.joyapi.service.ImageDownloadService;
 import org.joyapi.service.PostService;
 import org.joyapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -19,59 +21,91 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
 
     private final AuthorService authorService;
-    private final PostService postService;
     private final UserService userService;
+    private final String botUsername;
+    private final String botToken;
 
-    private static final String CHAT_ID = "843593235";
-
-    @Autowired
-    public TelegramBot(AuthorService authorService, PostService postService, UserService userService) {
+    public TelegramBot(UserService userService, AuthorService authorService,
+                       @Value("${telegram-bot.token}") String botToken,
+                       @Value("${telegram-bot.username}") String botUsername) {
         this.authorService = authorService;
-        this.postService = postService;
         this.userService = userService;
+        this.botUsername = botUsername;
+        this.botToken = botToken;
     }
 
     @Override
     public String getBotUsername() {
-        return "JoyDecBot"; // Замените на имя вашего бота
+        return botUsername;
     }
 
     @Override
     public String getBotToken() {
-        return "7810877451:AAGtnDkSku01n8OZHxm66bCJ9vFKwXWyxeY"; // Замените на ваш токен
+        return botToken;
     }
 
     @Override
     public void onUpdateReceived(Update update) {
 
         if (update.hasMessage() && update.getMessage().hasText()) {
-            if (update.getMessage().getText().contains("/new_author")) {
-                String authorName = update.getMessage().getText();
-                authorService.newAuthor(authorName);
+            Long userId = update.getMessage().getFrom().getId();
+            switch (chooseOption(update.getMessage().getText())){
+                case start:
+                    String cookies = getMessageMainPart(update.getMessage().getText(), BotOption.start);
+                    if (cookies != null) {
+                        userService.addNewUser(update.getMessage(), cookies);
 
-                sendTextMessage("Author was saved: " + authorName);
-            } else if (update.getMessage().getText().contains("/start")) {
-                userService.addNewUser(update.getMessage());
+                        sendTextMessageByUserId("Warm welcome!", userId);
+                    } else {
+                        sendTextMessageByChatId("Put your cookies after " + BotOption.start.getValue(),
+                                                update.getMessage().getChatId());
+                    }
+                    break;
+                case new_author:
+                    String authorName = getMessageMainPart(update.getMessage().getText(), BotOption.new_author);
+                    if (authorName != null) {
+                        userService.newAuthor(authorName, userId);
+                        userService.syncPost(userId);
+
+                        sendTextMessageByUserId("Author was saved: " + authorName, userId);
+                    } else {
+                        sendTextMessageByChatId("Put author name after " + BotOption.new_author.getValue(),
+                                update.getMessage().getChatId());
+                    }
+                    break;
+                case sync_posts:
+                    userService.syncPost(userId);
+
+                    sendTextMessageByUserId("Your posts were synced", userId);
+                    break;
+                case invalid_option:
+                    sendTextMessageByUserId("You chose an invalid option", userId);
             }
         }
         if (update.hasCallbackQuery()){
             CallbackQuery callbackQuery = update.getCallbackQuery();
-            postService.addPostToFavorites(callbackQuery.getData());
-            sendTextMessage("It was added to favorites");
+            Long userId = callbackQuery.getFrom().getId();
+
+            userService.addPostToFavorites(callbackQuery.getData(), userId);
+            sendTextMessageByUserId("It was added to favorites", userId);
         }
     }
 
-    public void sendTextMessage(String messageText) {
+    public void sendTextMessageByUserId(String messageText, Long userId) {
+        Long chatId = userService.getUser(userId).getChatID();
+        sendTextMessageByChatId(messageText, chatId);
+    }
+
+    public void sendTextMessageByChatId(String messageText, Long chatId) {
         SendMessage message = new SendMessage();
         message.setText(messageText);
-        message.setChatId(CHAT_ID);
+        message.setChatId(chatId);
 
         try {
             execute(message);
@@ -79,37 +113,42 @@ public class TelegramBot extends TelegramLongPollingBot {
             throw new TelegramSendMessageException(String.format("""
                     Error occurred during sending message to user!
                     ChatID:%s
-                    Message:%s""", CHAT_ID, messageText));
+                    Message:%s""", chatId, message.getText()));
         }
     }
 
-    public void sendImage(File imageFile) {
+    public void sendImage(File imageFile, Long userId) {
+        Long chatId = userService.getUser(userId).getChatID();
         SendPhoto sendPhoto = new SendPhoto();
-        sendPhoto.setChatId(CHAT_ID);
+        sendPhoto.setChatId(chatId);
         sendPhoto.setPhoto(new InputFile(imageFile));
         try {
             execute(sendPhoto);
         } catch (TelegramApiException exception) {
             throw new TelegramSendImageException(String.format("""
                     Error occurred during sending message to user!
-                    ChatID:%s""", CHAT_ID));
+                    ChatID:%s""", chatId));
         }
     }
 
-    public void sendImageList(List<File> imageList) {
-        imageList.forEach(this::sendImage);
+    public void sendImageList(List<File> imageList, Long userId) {
+        imageList.forEach(image -> sendImage(image, userId));
     }
 
-    public void sendReactionMessage(String postId) {
+    public void sendReactionMessage(String postId, Long userId) {
+        Long chatId = userService.getUser(userId).getChatID();
         SendMessage message = SendMessage.builder()
-                                        .chatId(CHAT_ID)
+                                        .chatId(chatId)
                                         .text("To favorites?")
                                         .replyMarkup(createReactionButtons(postId))
                                         .build();
         try {
             execute(message);
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            throw new TelegramSendMessageException(String.format("""
+                    Error occurred during sending reaction message to user!
+                    ChatID:%s
+                    Message:%s""", chatId, message.getText()));
         }
     }
 
@@ -122,6 +161,22 @@ public class TelegramBot extends TelegramLongPollingBot {
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(addToFavorite))
                 .build();
+    }
+
+    private BotOption chooseOption(String message){
+        if (message.contains("/start")){
+            return BotOption.start;
+        } else if (message.contains("/new_author")) {
+            return BotOption.new_author;
+        } else if (message.contains("/sync_post")) {
+            return BotOption.sync_posts;
+        }
+        return BotOption.invalid_option;
+    }
+
+    private String getMessageMainPart(String inputMessage, BotOption option){
+        String[] input = inputMessage.split(option.getValue() + " ");
+        return input[1];
     }
 }
 

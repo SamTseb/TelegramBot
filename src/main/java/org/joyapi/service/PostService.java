@@ -2,10 +2,7 @@ package org.joyapi.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.joyapi.exception.AuthorNotFoundException;
-import org.joyapi.model.Author;
 import org.joyapi.model.Post;
-import org.joyapi.repos.AuthorRepository;
 import org.joyapi.repos.PostRepository;
 import org.joyapi.service.eternal.PostExternalService;
 import org.springframework.stereotype.Service;
@@ -42,8 +39,8 @@ public class PostService {
         return postRepository.existsByPostId(id);
     }
 
-    public void addPostToFavorites(String postId){
-        postExternalService.addPostToFavorites(postId);
+    public void addPostToFavorites(String postId, String userCookies){
+        postExternalService.addPostToFavorites(postId, userCookies);
     }
 
     public List<Post> getAndSavePosts(Integer limit, Integer pageNumber, String tags){

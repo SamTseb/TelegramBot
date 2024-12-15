@@ -15,12 +15,12 @@ import java.util.stream.Stream;
 public class AuthorService {
     private AuthorRepository authorRepository;
 
-    public void newAuthor(String authorName){
+    public Author newAuthor(String authorName){
         Author author = new Author();
         author.setName(authorName);
         author.setPostAmount(0l);
 
-        authorRepository.save(author);
+        return authorRepository.save(author);
     }
 
     public void oneMorePost(Post post){

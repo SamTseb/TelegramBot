@@ -35,7 +35,7 @@ public class ApiConfig {
         apiClient.addDefaultHeader("Accept-Encoding", acceptEncoding);
         apiClient.addDefaultHeader("Cache-Control", cacheControl);
         apiClient.addDefaultHeader("Connection", connection);
-        apiClient.addDefaultHeader("Cookie", cookies);
+//        apiClient.addDefaultHeader("Cookie", cookies);
 
         apiClient.setDebugging(requestDebugMode);
 

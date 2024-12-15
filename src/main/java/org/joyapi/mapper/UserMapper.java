@@ -20,6 +20,7 @@ public interface UserMapper {
                                                 ZoneId.systemDefault()
                                                 )
                         );
+        user.setChatID(message.getChatId());
         return user;
     }
 }

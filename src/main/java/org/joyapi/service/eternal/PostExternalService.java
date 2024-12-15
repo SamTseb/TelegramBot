@@ -18,7 +18,7 @@ public class PostExternalService {
     private final PostMapper postMapper;
     private final AuthorService authorService;
 
-    public Post getPost(String postId) {
+    /*public Post getPost(String postId) {
         PostDTO postDTO = defaultApi.getPosts("dapi", "post", "index",
                                                 null, null, null, null,
                                                         postId, "1", null, null)
@@ -27,7 +27,7 @@ public class PostExternalService {
                                     .orElse(null);
 
         return postMapper.toPost(postDTO);
-    }
+    }*/
 
     public List<Post> getPostList(Integer limit, Integer pageNumber, String tags) {
         List<PostDTO> postDTOs = defaultApi.getPosts("dapi", "post", "index", limit, pageNumber, tags,
@@ -43,11 +43,14 @@ public class PostExternalService {
         return postMapper.toPostList(postDTOs);
     }
 
-    public List<Post> getPostList(String tags){
+    /*public List<Post> getPostList(String tags){
         return getPostList(100, 0, tags);
-    }
+    }*/
 
-    public void addPostToFavorites(String postId) {
+    public void addPostToFavorites(String postId, String userCookies) {
+        defaultApi.getApiClient().addDefaultHeader("Cookie", userCookies);
+        defaultApi.getApiClient().addDefaultHeader("Host", "source.com");
+        defaultApi.getApiClient().addDefaultHeader("Postman-Token", "f5a431ea-76b4-49aa-be1c-47bf68ebca84");
         defaultApi.addPostToFavorites(postId);
     }
 }
