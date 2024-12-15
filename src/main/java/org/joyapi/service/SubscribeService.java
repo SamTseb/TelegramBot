@@ -32,18 +32,4 @@ public class SubscribeService {
             }
         }
     }
-
-    /*private List<Post> getAndSavePosts(Integer limit, Integer pageNumber, String tags){
-        List<Post> posts = postExternalService.getPostList(limit, pageNumber, tags);
-        return savePosts(posts);
-    }
-
-    private List<Post> savePosts(List<Post> posts){
-        List<Post> savedPosts = posts.stream()
-                .filter(post -> !postService.doesPostExist(post.getPostId()))
-                .toList();
-        savedPosts.forEach(postService::savePost);
-
-        return savedPosts;
-    }*/
 }
