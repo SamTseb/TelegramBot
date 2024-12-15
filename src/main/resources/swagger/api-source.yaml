@@ -4,7 +4,7 @@ info:
   description: API for accessing posts, deleted images, comments, and tags from Source.
   version: 1.0.0
 servers:
-  - url: https://api.source.com
+  - url: https://source.com
 paths:
   /index.php:
     get:
