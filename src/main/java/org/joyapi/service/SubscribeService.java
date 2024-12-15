@@ -24,7 +24,7 @@ public class SubscribeService {
 
     // TODO It's execited in other thread than bot processes. It intersects with them!
     @Transactional
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(cron = "0 0 * * * *")
     public void subscribe(){
         List<User> users = userService.getUsers();
         for(User user : users) {

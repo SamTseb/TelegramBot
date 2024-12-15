@@ -61,7 +61,12 @@ public class TelegramBot extends TelegramLongPollingBot {
                     if (cookies != null) {
                         userService.addNewUser(update.getMessage(), cookies);
 
-                        sendTextMessageByUserId("Warm welcome!", userId);
+                        sendTextMessageByUserId("""
+                                                                Warm welcome!
+                                                                
+                                                                To add your new favorite artist put his name after /new_author
+                                                                To sync your posts - /sync_posts
+                                                                """, userId);
                     } else {
                         sendTextMessageByChatId("Put your cookies after " + BotOption.start.getValue(),
                                                 update.getMessage().getChatId());
@@ -176,7 +181,11 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private String getMessageMainPart(String inputMessage, BotOption option){
         String[] input = inputMessage.split(option.getValue() + " ");
-        return input[1];
+        if (input.length == 2) {
+            return input[1];
+        } else {
+            return null;
+        }
     }
 }
 
