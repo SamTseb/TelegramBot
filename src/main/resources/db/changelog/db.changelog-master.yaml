@@ -27,8 +27,13 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: tags
+                  name: authors
                   type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
                   constraints:
                     nullable: false
   - changeSet:

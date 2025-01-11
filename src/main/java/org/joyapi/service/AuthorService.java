@@ -38,8 +38,8 @@ public class AuthorService {
         return authorRepository.findAll();
     }
 
-    public List<String> recognizeAuthors(String inputTags){
-        return Stream.of(inputTags.split(" "))
+    public List<String> recognizeAuthors(String inputAuthors){
+        return Stream.of(inputAuthors.split(" "))
                     .filter(authorRepository::existsByName)
                     .toList();
     }
