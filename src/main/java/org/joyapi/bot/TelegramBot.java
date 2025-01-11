@@ -1,13 +1,10 @@
 package org.joyapi.bot;
 
-import lombok.AllArgsConstructor;
 import org.joyapi.exception.TelegramSendImageException;
 import org.joyapi.exception.TelegramSendMessageException;
 import org.joyapi.model.enums.BotOption;
 import org.joyapi.service.AuthorService;
-import org.joyapi.service.PostService;
 import org.joyapi.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -31,6 +28,14 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final String botUsername;
     private final String botToken;
 
+    /**
+     * Constructs a new TelegramBot.
+     *
+     * @param userService the user service
+     * @param authorService the author service
+     * @param botToken the bot token
+     * @param botUsername the bot username
+     */
     public TelegramBot(UserService userService, AuthorService authorService,
                        @Value("${telegram-bot.token}") String botToken,
                        @Value("${telegram-bot.username}") String botUsername) {
@@ -40,16 +45,31 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.botToken = botToken;
     }
 
+    /**
+     * Returns the bot username.
+     *
+     * @return the bot username
+     */
     @Override
     public String getBotUsername() {
         return botUsername;
     }
 
+    /**
+     * Returns the bot token.
+     *
+     * @return the bot token
+     */
     @Override
     public String getBotToken() {
         return botToken;
     }
 
+    /**
+     * Handles incoming updates from Telegram.
+     *
+     * @param update the update received
+     */
     @Override
     public void onUpdateReceived(Update update) {
 
@@ -69,7 +89,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                                                                 """, userId);
                     } else {
                         sendTextMessageByChatId("Put your cookies after " + BotOption.start.getValue(),
-                                                update.getMessage().getChatId());
+                                update.getMessage().getChatId());
                     }
                     break;
                 case new_author:
@@ -102,11 +122,23 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    /**
+     * Sends a text message to a user by their user ID.
+     *
+     * @param messageText the message text
+     * @param userId the user ID
+     */
     public void sendTextMessageByUserId(String messageText, Long userId) {
         Long chatId = userService.getUser(userId).getChatID();
         sendTextMessageByChatId(messageText, chatId);
     }
 
+    /**
+     * Sends a text message to a user by their chat ID.
+     *
+     * @param messageText the message text
+     * @param chatId the chat ID
+     */
     public void sendTextMessageByChatId(String messageText, Long chatId) {
         SendMessage message = new SendMessage();
         message.setText(messageText);
@@ -122,6 +154,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    /**
+     * Sends an image to a user by their user ID.
+     *
+     * @param imageFile the image file
+     * @param userId the user ID
+     */
     public void sendImage(File imageFile, Long userId) {
         Long chatId = userService.getUser(userId).getChatID();
         SendPhoto sendPhoto = new SendPhoto();
@@ -136,17 +174,29 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    /**
+     * Sends a list of images to a user by their user ID.
+     *
+     * @param imageList the list of image files
+     * @param userId the user ID
+     */
     public void sendImageList(List<File> imageList, Long userId) {
         imageList.forEach(image -> sendImage(image, userId));
     }
 
+    /**
+     * Sends a reaction message to a user by their user ID.
+     *
+     * @param postId the post ID
+     * @param userId the user ID
+     */
     public void sendReactionMessage(String postId, Long userId) {
         Long chatId = userService.getUser(userId).getChatID();
         SendMessage message = SendMessage.builder()
-                                        .chatId(chatId)
-                                        .text("To favorites?")
-                                        .replyMarkup(createReactionButtons(postId))
-                                        .build();
+                .chatId(chatId)
+                .text("To favorites?")
+                .replyMarkup(createReactionButtons(postId))
+                .build();
         try {
             execute(message);
         } catch (TelegramApiException e) {
@@ -157,6 +207,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    /**
+     * Creates reaction buttons for a post.
+     *
+     * @param postId the post ID
+     * @return the inline keyboard markup with reaction buttons
+     */
     private InlineKeyboardMarkup createReactionButtons(String postId) {
         InlineKeyboardButton addToFavorite = InlineKeyboardButton.builder()
                 .text("👍")
@@ -168,6 +224,12 @@ public class TelegramBot extends TelegramLongPollingBot {
                 .build();
     }
 
+    /**
+     * Chooses the bot option based on the message text.
+     *
+     * @param message the message text
+     * @return the chosen bot option
+     */
     private BotOption chooseOption(String message){
         if (message.contains("/start")){
             return BotOption.start;
@@ -179,6 +241,13 @@ public class TelegramBot extends TelegramLongPollingBot {
         return BotOption.invalid_option;
     }
 
+    /**
+     * Extracts the main part of the message based on the bot option.
+     *
+     * @param inputMessage the input message
+     * @param option the bot option
+     * @return the main part of the message, or null if not found
+     */
     private String getMessageMainPart(String inputMessage, BotOption option){
         String[] input = inputMessage.split(option.getValue() + " ");
         if (input.length == 2) {
