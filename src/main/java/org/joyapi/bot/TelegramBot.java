@@ -117,7 +117,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             CallbackQuery callbackQuery = update.getCallbackQuery();
             Long userId = callbackQuery.getFrom().getId();
 
-            userService.addPostToFavorites(callbackQuery.getData(), userId);
+            userService.addPostToFavorites(Long.valueOf(callbackQuery.getData()), userId);
             sendTextMessageByUserId("It was added to favorites", userId);
         }
     }
@@ -190,7 +190,7 @@ public class TelegramBot extends TelegramLongPollingBot {
      * @param postId the post ID
      * @param userId the user ID
      */
-    public void sendReactionMessage(String postId, Long userId) {
+    public void sendReactionMessage(Long postId, Long userId) {
         Long chatId = userService.getUser(userId).getChatID();
         SendMessage message = SendMessage.builder()
                 .chatId(chatId)
@@ -213,10 +213,10 @@ public class TelegramBot extends TelegramLongPollingBot {
      * @param postId the post ID
      * @return the inline keyboard markup with reaction buttons
      */
-    private InlineKeyboardMarkup createReactionButtons(String postId) {
+    private InlineKeyboardMarkup createReactionButtons(Long postId) {
         InlineKeyboardButton addToFavorite = InlineKeyboardButton.builder()
                 .text("👍")
-                .callbackData(postId)
+                .callbackData(postId.toString())
                 .build();
 
         return InlineKeyboardMarkup.builder()

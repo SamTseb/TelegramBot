@@ -66,7 +66,7 @@ public class PostService {
      * @param id the post ID to check
      * @return true if the post exists, false otherwise
      */
-    public boolean doesPostExist(String id) {
+    public boolean doesPostExist(Long id) {
         return postRepository.existsByPostId(id);
     }
 
@@ -76,7 +76,7 @@ public class PostService {
      * @param postId the ID of the post to add to favorites
      * @param userCookies the user's cookies
      */
-    public void addPostToFavorites(String postId, String userCookies){
+    public void addPostToFavorites(Long postId, String userCookies){
         postExternalService.addPostToFavorites(postId, userCookies);
     }
 
@@ -118,6 +118,7 @@ public class PostService {
         if (!posts.isEmpty()){
             List<String> newPostIds = posts.stream()
                     .map(Post::getPostId)
+                    .map(String::valueOf)
                     .toList();
             String newPostMessage = "New posts:\n" + String.join("\n", newPostIds);
             log.info(newPostMessage);

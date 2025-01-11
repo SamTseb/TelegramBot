@@ -9,5 +9,5 @@ import java.util.UUID;
 @Repository
 public interface PostRepository extends JpaRepository<Post, UUID> {
 
-    boolean existsByPostId(String id);
+    boolean existsByPostId(Long id);
 }

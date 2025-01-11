@@ -21,11 +21,11 @@ public class Post {
     private String fileUrl;
 
     @Column(name = "post_id", nullable = false, unique = true)
-    private String postId;
+    private Long postId;
 
     @Column
     private int score;
 
     @Column(nullable = false)
-    private String tags;
+    private String authors;
 }

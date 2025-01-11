@@ -47,10 +47,10 @@ public class PostExternalService {
         return getPostList(100, 0, tags);
     }*/
 
-    public void addPostToFavorites(String postId, String userCookies) {
+    public void addPostToFavorites(Long postId, String userCookies) {
         defaultApi.getApiClient().addDefaultHeader("Cookie", userCookies);
         defaultApi.getApiClient().addDefaultHeader("Host", "source.com");
         defaultApi.getApiClient().addDefaultHeader("Postman-Token", "f5a431ea-76b4-49aa-be1c-47bf68ebca84");
-        defaultApi.addPostToFavorites(postId);
+        defaultApi.addPostToFavorites(postId.toString());
     }
 }

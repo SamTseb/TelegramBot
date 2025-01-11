@@ -43,7 +43,7 @@ public class UserService {
         return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
     }
 
-    public void addPostToFavorites(String postId, Long userId){
+    public void addPostToFavorites(Long postId, Long userId){
         String userCookies = getUser(userId).getCookies();
         postService.addPostToFavorites(postId, userCookies);
     }

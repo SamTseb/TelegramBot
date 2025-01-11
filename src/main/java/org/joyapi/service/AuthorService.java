@@ -24,7 +24,7 @@ public class AuthorService {
     }
 
     public void oneMorePost(Post post){
-        List<String> authorNames = recognizeAuthors(post.getTags());
+        List<String> authorNames = recognizeAuthors(post.getAuthors());
 
         for(String authorName : authorNames) {
             Author author = authorRepository.findByName(authorName)
