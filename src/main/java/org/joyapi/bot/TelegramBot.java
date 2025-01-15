@@ -1,6 +1,5 @@
 package org.joyapi.bot;
 
-import org.joyapi.exception.TelegramSendImageException;
 import org.joyapi.exception.TelegramSendMessageException;
 import org.joyapi.model.enums.BotOption;
 import org.joyapi.service.AuthorService;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.send.SendVideo;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -23,7 +23,6 @@ import java.util.List;
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
 
-    private final AuthorService authorService;
     private final UserService userService;
     private final String botUsername;
     private final String botToken;
@@ -39,7 +38,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     public TelegramBot(UserService userService, AuthorService authorService,
                        @Value("${telegram-bot.token}") String botToken,
                        @Value("${telegram-bot.username}") String botUsername) {
-        this.authorService = authorService;
         this.userService = userService;
         this.botUsername = botUsername;
         this.botToken = botToken;
@@ -150,7 +148,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             throw new TelegramSendMessageException(String.format("""
                     Error occurred during sending message to user!
                     ChatID:%s
-                    Message:%s""", chatId, message.getText()));
+                    Message:%s
+                    Exception: %s""", chatId, message.getText(), e.getMessage()));
         }
     }
 
@@ -160,28 +159,22 @@ public class TelegramBot extends TelegramLongPollingBot {
      * @param imageFile the image file
      * @param userId the user ID
      */
-    public void sendImage(File imageFile, Long userId) {
+    public void sendImage(File imageFile, Long userId) throws TelegramApiException {
         Long chatId = userService.getUser(userId).getChatID();
         SendPhoto sendPhoto = new SendPhoto();
         sendPhoto.setChatId(chatId);
         sendPhoto.setPhoto(new InputFile(imageFile));
-        try {
-            execute(sendPhoto);
-        } catch (TelegramApiException exception) {
-            throw new TelegramSendImageException(String.format("""
-                    Error occurred during sending message to user!
-                    ChatID:%s""", chatId));
-        }
+
+        execute(sendPhoto);
     }
 
-    /**
-     * Sends a list of images to a user by their user ID.
-     *
-     * @param imageList the list of image files
-     * @param userId the user ID
-     */
-    public void sendImageList(List<File> imageList, Long userId) {
-        imageList.forEach(image -> sendImage(image, userId));
+    public void sendVideo(File videoFile, Long userId) throws TelegramApiException {
+        Long chatId = userService.getUser(userId).getChatID();
+        SendVideo sendVideo = new SendVideo();
+        sendVideo.setChatId(chatId);
+        sendVideo.setVideo(new InputFile(videoFile));
+
+        execute(sendVideo);
     }
 
     /**
@@ -203,7 +196,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             throw new TelegramSendMessageException(String.format("""
                     Error occurred during sending reaction message to user!
                     ChatID:%s
-                    Message:%s""", chatId, message.getText()));
+                    Message:%s
+                    Exception: %s""", chatId, message.getText(), e.getMessage()));
         }
     }
 

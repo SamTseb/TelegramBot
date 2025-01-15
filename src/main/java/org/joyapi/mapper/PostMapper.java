@@ -12,6 +12,8 @@ public interface PostMapper {
 
     @Mapping(target = "guid", ignore = true)
     @Mapping(target = "postId", source = "id")
+    @Mapping(target = "authors", source = "tags")
+    @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     Post toPost(PostDTO postDTO);
 
     List<Post> toPostList(List<PostDTO> postDTOs);

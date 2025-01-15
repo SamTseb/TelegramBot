@@ -6,6 +6,7 @@ import org.joyapi.model.Post;
 import org.joyapi.repos.PostRepository;
 import org.joyapi.service.eternal.PostExternalService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,9 +28,10 @@ public class PostService {
      * @param post the post to save
      * @return the saved post
      */
-    public Post savePost(Post post) {
+    @Transactional
+    public void savePost(Post post) {
         authorService.oneMorePost(post);
-        return postRepository.save(post);
+        postRepository.save(post);
     }
 
     /**
@@ -103,7 +105,6 @@ public class PostService {
         List<Post> savedPosts = posts.stream()
                 .filter(post -> !doesPostExist(post.getPostId()))
                 .toList();
-        logNewPosts(savedPosts);
         savedPosts.forEach(this::savePost);
 
         return savedPosts;
@@ -114,7 +115,7 @@ public class PostService {
      *
      * @param posts the list of posts to be logged
      */
-    private void logNewPosts(List<Post> posts) {
+    public void logNewPosts(List<Post> posts) {
         if (!posts.isEmpty()){
             List<String> newPostIds = posts.stream()
                     .map(Post::getPostId)

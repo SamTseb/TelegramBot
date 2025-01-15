@@ -5,8 +5,10 @@ import com.source.client.invoker.ApiClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
+@EnableScheduling
 public class ApiConfig {
 
     @Value("${api-client.request-debug-mode}")
@@ -35,7 +37,6 @@ public class ApiConfig {
         apiClient.addDefaultHeader("Accept-Encoding", acceptEncoding);
         apiClient.addDefaultHeader("Cache-Control", cacheControl);
         apiClient.addDefaultHeader("Connection", connection);
-//        apiClient.addDefaultHeader("Cookie", cookies);
 
         apiClient.setDebugging(requestDebugMode);
 
