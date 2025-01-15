@@ -1,5 +1,6 @@
 package org.joyapi.service;
 
+import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -16,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 
+@Slf4j
 @Service
 public class MediaDownloadService {
     private static final long MAX_IMAGE_SIZE = 10L * 1024 * 1024;
@@ -109,6 +111,9 @@ public class MediaDownloadService {
                         .toFile(rescaledFile);
 
                 if (isResolutionAcceptable(rescaledFile)) {
+                    if (!originalFile.delete()){
+                        log.warn("Unable to delete original file: {}", originalFile.getName());
+                    }
                     return rescaledFile;
                 }
                 scalingFactor -= 0.1f;
@@ -136,6 +141,9 @@ public class MediaDownloadService {
                         .toFile(resizedFile);
 
                 if (isSizeAcceptable(resizedFile)) {
+                    if (!originalFile.delete()){
+                        log.warn("Unable to delete original file: {}", originalFile.getName());
+                    }
                     return resizedFile;
                 }
 

@@ -85,10 +85,10 @@ public class SubscribeService {
         }
     }
 
-    private void sendMedia(File image, User user) {
-        if (mediaDownloadService.getMediaType(image.getName()).equals("mp4")) {
+    private void sendMedia(File media, User user) {
+        if (mediaDownloadService.getMediaType(media.getName()).equals("mp4")) {
             try {
-                telegramBot.sendVideo(image, user.getId());
+                telegramBot.sendVideo(media, user.getId());
             } catch (TelegramApiException e) {
                 throw new TelegramSendMediaException(String.format("""
                                                                     Error occurred during sending video to user!
@@ -99,7 +99,7 @@ public class SubscribeService {
             }
         } else {
             try {
-                telegramBot.sendImage(image, user.getId());
+                telegramBot.sendImage(media, user.getId());
             } catch (TelegramApiException e) {
                 throw new TelegramSendMediaException(String.format("""
                                                     Error occurred during sending image to user!
@@ -108,6 +108,9 @@ public class SubscribeService {
                                                     null,
                                                     null);
             }
+        }
+        if (!media.delete()){
+            log.warn("Unable to delete media: {}", media.getName());
         }
     }
 }
