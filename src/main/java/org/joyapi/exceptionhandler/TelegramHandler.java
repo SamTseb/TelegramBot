@@ -21,7 +21,8 @@ public class TelegramHandler {
 
     @ExceptionHandler(TelegramSendMediaException.class)
     public void handleAllExeptions(TelegramSendMediaException exception){
-        log.warn(exception.getMessage());
-        telegramBot.sendTextMessageByUserId("Cannot send an image with URL: " + exception.getImageURL(), exception.getUserId());
+        String message = exception.getMessage() + "\nURL: " + exception.getImageURL();
+        log.warn(message);
+        telegramBot.sendTextMessageByUserId(message, exception.getUserId());
     }
 }

@@ -21,6 +21,7 @@ public interface UserMapper {
                                                 )
                         );
         user.setChatID(message.getChatId());
+        user.setProhibitedTags("");
         return user;
     }
 }

@@ -47,6 +47,7 @@ public class SubscribeService {
      */
 //    @Transactional
 //    @Scheduled(cron = "0 0 * * * *")
+//    @Scheduled(cron = "0 20 * * * *")
 //    @Scheduled(cron = "0 28/15 * * * *")
     @Scheduled(cron = "0 * * * * *")
     public void subscribe() {
@@ -55,7 +56,9 @@ public class SubscribeService {
             log.info("New post for a user with ID {}", user.getId());
             Set<Author> allAuthors = user.getFavoriteAuthors();
             for (Author author : allAuthors) {
-                List<Post> posts = postService.getAndSavePosts(postAmount, PAGE_NUMBER, author.getName());
+                String prohibitedTags = user.getProhibitedTags() != null ?
+                                        user.getProhibitedTags() : "";
+                List<Post> posts = postService.getAndSavePosts(postAmount, PAGE_NUMBER, author.getName() + prohibitedTags);
 
                 if(posts.isEmpty()) {
                     continue;

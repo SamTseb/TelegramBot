@@ -86,6 +86,9 @@ databaseChangeLog:
               - column:
                   name: cookies
                   type: VARCHAR(255)
+              - column:
+                  name: prohibited_tags
+                  type: VARCHAR(500)
   - changeSet:
       id: 5
       author: botmaster

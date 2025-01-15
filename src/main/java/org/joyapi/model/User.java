@@ -37,4 +37,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "author_name")
     )
     private Set<Author> favoriteAuthors = new HashSet<>();
+
+    @Column(name = "prohibited_tags")
+    private String prohibitedTags;
 }

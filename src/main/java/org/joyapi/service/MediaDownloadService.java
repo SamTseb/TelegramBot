@@ -27,10 +27,10 @@ public class MediaDownloadService {
             File media = downloadMediaExternal(url);
             if (!getMediaType(url).equals("mp4")) {
                 if (!isResolutionAcceptable(media)) {
-                    rescaleImage(media);
+                    media = rescaleImage(media);
                 }
                 if (!isSizeAcceptable(media)) {
-                    compressImage(media);
+                    media = compressImage(media);
                 }
             }
             return media;
@@ -89,7 +89,7 @@ public class MediaDownloadService {
         return (imageWidth + imageHeight) <= MAX_DIMENSIONS_LENGTH;
     }
 
-    private void rescaleImage(File originalFile) {
+    private File rescaleImage(File originalFile) {
         try {
             File rescaledFile = File.createTempFile("rescaled_", originalFile.getName());
             BufferedImage image = ImageIO.read(originalFile);
@@ -109,8 +109,7 @@ public class MediaDownloadService {
                         .toFile(rescaledFile);
 
                 if (isResolutionAcceptable(rescaledFile)) {
-                    originalFile = rescaledFile;
-                    break;
+                    return rescaledFile;
                 }
                 scalingFactor -= 0.1f;
             }
@@ -122,9 +121,9 @@ public class MediaDownloadService {
         }
     }
 
-    private void compressImage(File originalFile) {
+    private File compressImage(File originalFile) {
         try {
-            File resizedFile = File.createTempFile("downloaded_" + originalFile.getName(), ".jpg");
+            File resizedFile = File.createTempFile("resized_", originalFile.getName());
             BufferedImage image = ImageIO.read(originalFile);
             int currentWidth = image.getWidth();
             int currentHeight = image.getHeight();
@@ -137,8 +136,7 @@ public class MediaDownloadService {
                         .toFile(resizedFile);
 
                 if (isSizeAcceptable(resizedFile)) {
-                    originalFile = resizedFile;
-                    break;
+                    return resizedFile;
                 }
 
                 quality -= 0.1f;

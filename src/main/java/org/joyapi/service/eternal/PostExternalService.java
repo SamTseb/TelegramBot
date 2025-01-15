@@ -31,14 +31,15 @@ public class PostExternalService {
 
     public List<Post> getPostList(Integer limit, Integer pageNumber, String tags) {
         List<PostDTO> postDTOs = defaultApi.getPosts("dapi", "post", "index", limit, pageNumber, tags,
-                                null, null, "1", null, null).stream()
-                .map(postDTO -> {
-                    if (!StringUtils.isEmpty(postDTO.getTags())) {
-                        postDTO.setTags(String.join(" ", authorService.recognizeAuthors(postDTO.getTags())));
-                    }
-                    return postDTO;
-                })
-                .toList();
+                                null, null, "1", null, null)
+                                .stream()
+                                .map(postDTO -> {
+                                    if (!StringUtils.isEmpty(postDTO.getTags())) {
+                                        postDTO.setTags(String.join(" ", authorService.recognizeAuthors(postDTO.getTags())));
+                                    }
+                                    return postDTO;
+                                })
+                                .toList();
 
         return postMapper.toPostList(postDTOs);
     }
